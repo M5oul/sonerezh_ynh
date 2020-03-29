@@ -1,5 +1,7 @@
 # Sonerezh package for YunoHost
 
+[![Integration level](https://dash.yunohost.org/integration/sonerezh.svg)](https://dash.yunohost.org/appci/app/sonerezh) ![](https://ci-apps.yunohost.org/ci/badges/sonerezh.status.svg) ![](https://ci-apps.yunohost.org/ci/badges/sonerezh.maintain.svg)
+
 * [Sonerezh website](https://www.sonerezh.bzh/)
 * [YunoHost website](https://yunohost.org/)
 
