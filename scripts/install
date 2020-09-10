@@ -117,7 +117,7 @@ ynh_add_fpm_config
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
-chown -R www-data: $final_path
+chown -R www-data:www-data $final_path
 chmod -R 775 $final_path
 
 #=================================================
