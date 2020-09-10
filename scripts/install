@@ -25,7 +25,7 @@ ynh_abort_if_errors
 #=================================================
 
 domain=$YNH_APP_ARG_DOMAIN
-url_path=$YNH_APP_ARG_URL_PATH
+path_url=$YNH_APP_ARG_PATH
 email_auth=$YNH_APP_ARG_EMAIL_AUTH
 password=$YNH_APP_ARG_PASSWORD
 
