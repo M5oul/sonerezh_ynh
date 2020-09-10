@@ -1,76 +1,166 @@
 #!/bin/bash
 
-# Exit on command errors and treat unset variables as an error
-set -eu
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Retrieve arguments
-app=$YNH_APP_INSTANCE_NAME
+source _common.sh
+source /usr/share/yunohost/helpers
+
+#=================================================
+# MANAGE SCRIPT FAILURE
+#=================================================
+
+ynh_clean_setup () {
+	### Remove this function if there's nothing to clean before calling the remove script.
+	true
+}
+# Exit if an error occurs during the execution of the script
+ynh_abort_if_errors
+
+#=================================================
+# RETRIEVE ARGUMENTS FROM THE MANIFEST
+#=================================================
+
 domain=$YNH_APP_ARG_DOMAIN
 url_path=$YNH_APP_ARG_URL_PATH
 email_auth=$YNH_APP_ARG_EMAIL_AUTH
 password=$YNH_APP_ARG_PASSWORD
-music_path="/home/yunohost.app/sonerezh"
 
-# Source YunoHost helpers
-source /usr/share/yunohost/helpers
+app=$YNH_APP_INSTANCE_NAME
 
-# Save app settings
-ynh_app_setting_set "$app" music_path "$music_path"
+#=================================================
+# CHECK IF THE APP CAN BE INSTALLED WITH THESE ARGS
+#=================================================
+ynh_script_progression --message="Validating installation parameters..." --time --weight=1
 
-# Check password length
-if [ ! ${#password} -ge 8 ]; then ynh_die "password length must be ≥ 8 characters."
+final_path=/var/www/$app
+test ! -e "$final_path" || ynh_die --message="This path already contains a folder"
+
+# Register (book) web path
+ynh_webpath_register --app=$app --domain=$domain --path_url=$path_url
+
+#=================================================
+# STORE SETTINGS FROM MANIFEST
+#=================================================
+ynh_script_progression --message="Storing installation settings..." --time --weight=1
+
+ynh_app_setting_set --app=$app --key=domain --value=$domain
+ynh_app_setting_set --app=$app --key=path --value=$path_url
+ynh_app_setting_set --app=$app --key=admin --value=$admin
+ynh_app_setting_set --app=$app --key=is_public --value=$is_public
+
+#=================================================
+# INSTALL DEPENDENCIES
+#=================================================
+ynh_script_progression --message="Installing dependencies..." --time --weight=1
+
+ynh_install_app_dependencies $pkg_dependencies
+
+#=================================================
+# CREATE A MYSQL DATABASE
+#=================================================
+ynh_script_progression --message="Creating a MySQL database..." --time --weight=1
+
+db_name=$(ynh_sanitize_dbid --db_name=$app)
+db_user=$db_name
+ynh_app_setting_set --app=$app --key=db_name --value=$db_name
+ynh_mysql_setup_db --db_user=$db_user --db_name=$db_name
+
+#=================================================
+# DOWNLOAD, CHECK AND UNPACK SOURCE
+#=================================================
+ynh_script_progression --message="Setting up source files..." --time --weight=1
+
+ynh_app_setting_set --app=$app --key=final_path --value=$final_path
+# Download, check integrity, uncompress and patch the source from app.src
+ynh_setup_source --dest_dir="$final_path"
+
+#=================================================
+# NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Configuring nginx web server..." --time --weight=1
+
+### `ynh_add_nginx_config` will use the file conf/nginx.conf
+
+# Create a dedicated nginx config
+ynh_add_nginx_config
+
+#=================================================
+# CREATE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Configuring system user..." --time --weight=1
+
+# Create a system user
+ynh_system_user_create --username=$app
+
+#=================================================
+# PHP-FPM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Configuring php-fpm..." --time --weight=1
+
+# Create a dedicated php-fpm config
+ynh_add_fpm_config
+
+#=================================================
+# MODIFY A CONFIG FILE
+#=================================================
+
+### `ynh_replace_string` is used to replace a string in a file.
+### (It's compatible with sed regular expressions syntax)
+
+#ynh_replace_string --match_string="match_string" --replace_string="replace_string" --target_file="$final_path/CONFIG_FILE"
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# SECURE FILES AND DIRECTORIES
+#=================================================
+
+chown -R www-data: $final_path
+chmod -R 775 $final_path
+
+#=================================================
+# INTEGRATE SERVICE IN YUNOHOST
+#=================================================
+ynh_script_progression --message="Integrating service in YunoHost..." --time --weight=1
+
+yunohost service add $app --description "A short description of the app" --log "/var/log/$app/$app.log"
+
+#=================================================
+# SETUP SSOWAT
+#=================================================
+ynh_script_progression --message="Configuring SSOwat..." --time --weight=1
+
+# Make app public if necessary
+if [ $is_public -eq 1 ]
+then
+	# unprotected_uris allows SSO credentials to be passed anyway.
+	ynh_app_setting_set --app=$app --key=unprotected_uris --value="/"
 fi
 
-# Check url path is not root
-if [[ $url_path == "/" ]]; then
-ynh_die "Currently Sonerezh can only be installed on a subpath domain"
-fi
+#=================================================
+# RELOAD NGINX
+#=================================================
+ynh_script_progression --message="Reloading nginx web server..." --time --weight=1
 
-# Check domain/path availability
-sudo yunohost app checkurl $domain$url_path -a $app \
-	|| ynh_die "Path not available: $domain$url_path"
+ynh_systemd_action --service_name=php$phpversion-fpm --action=reload
+ynh_systemd_action --service_name=nginx --action=reload
 
-# Install dependency to convert tracks to a readable format for the browser
-sudo apt-get -y -qq install libav-tools
+#=================================================
+# END OF SCRIPT
+#=================================================
 
-# Create music repository
-sudo mkdir -p $music_path
+ynh_script_progression --message="Installation of $app completed" --time --last
 
-# Fetch and install sources
-sudo wget --quiet https://github.com/Sonerezh/sonerezh/archive/1.1.3.tar.gz --output-document=/tmp/$app.tar.gz
-src_path=/var/www/sonerezh
-sudo mkdir -p $src_path
-sudo tar zxf /tmp/$app.tar.gz -C /var/www --transform 's/sonerezh-1.1.3/sonerezh/'
-sudo chown -R www-data: $src_path
-sudo chmod -R 775 $src_path
 
-# Initiate MySQL database
-db_pwd=$(openssl rand -hex 15)
-sudo yunohost app initdb $app -p $db_pwd
-ynh_app_setting_set "$app" mysqlpwd "$db_pwd"
 
-# Configure Nginx
-nginxconf=../conf/nginx-subpath.conf
-sed -i "s@YNH_WWW_PATH@$url_path@g" $nginxconf
-sed -i "s@YNH_WWW_ALIAS@$src_path/app/webroot@g" $nginxconf
-sed -i "s@YNH_WWW_APP@$app@g" $nginxconf
-sudo cp $nginxconf /etc/nginx/conf.d/$domain.d/$app.conf
 
-# Configure PHP
-php_conf=/etc/php5/fpm/pool.d/$app.conf
-sed -i "s@YNH_WWW_ALIAS@$app/app/webroot@g" ../conf/php-fpm.conf
-sed -i "s@YNH_WWW_APP@$app@g" ../conf/php-fpm.conf
-sudo cp ../conf/php-fpm.conf $php_conf
-sudo chown root: $php_conf
-sudo chmod 644 $php_conf
 
-# Set app public
-ynh_app_setting_set "$app" unprotected_uris "/"
-sudo yunohost app ssowatconf
 
-# Reload Nginx and PHP conf
-sudo service nginx reload
-sudo service php5-fpm reload
+
 
 # Add alias line in hosts file
 echo "127.0.0.1 $domain # $app" | sudo tee -a /etc/hosts
