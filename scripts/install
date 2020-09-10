@@ -81,9 +81,7 @@ ynh_setup_source --dest_dir="$final_path"
 #=================================================
 # NGINX CONFIGURATION
 #=================================================
-ynh_script_progression --message="Configuring nginx web server..." --time --weight=1
-
-### `ynh_add_nginx_config` will use the file conf/nginx.conf
+ynh_script_progression --message="Configuring NGINX web server..." --time --weight=1
 
 # Create a dedicated nginx config
 ynh_add_nginx_config
@@ -162,22 +160,22 @@ ynh_script_progression --message="Installation of $app completed" --time --last
 
 
 
-# Add alias line in hosts file
-echo "127.0.0.1 $domain # $app" | sudo tee -a /etc/hosts
+# # Add alias line in hosts file
+# echo "127.0.0.1 $domain # $app" | sudo tee -a /etc/hosts
 
-# Postinstall on web interface
-sleep 1 && curl -k \
--d "data[DB][datasource]=MySQL" \
--d "data[DB][host]=localhost" \
--d "data[DB][database]=$app" \
--d "data[DB][login]=$app" \
--d "data[DB][password]=$db_pwd" \
--d "data[DB][prefix]="$app"_" \
--d "data[User][email]=$email_auth" \
--d "data[User][password]=$password" \
--d "data[User][confirm_password]=$password" \
--d "[Setting][Rootpath][0][rootpath]=$music_path" \
-https://$domain$url_path/install
+# # Postinstall on web interface
+# sleep 1 && curl -k \
+# -d "data[DB][datasource]=MySQL" \
+# -d "data[DB][host]=localhost" \
+# -d "data[DB][database]=$app" \
+# -d "data[DB][login]=$app" \
+# -d "data[DB][password]=$db_pwd" \
+# -d "data[DB][prefix]="$app"_" \
+# -d "data[User][email]=$email_auth" \
+# -d "data[User][password]=$password" \
+# -d "data[User][confirm_password]=$password" \
+# -d "[Setting][Rootpath][0][rootpath]=$music_path" \
+# https://$domain$url_path/install
 
-# Remove alias line from hosts file
-sudo sed -i "/# $app/d" /etc/hosts
+# # Remove alias line from hosts file
+# sudo sed -i "/# $app/d" /etc/hosts
