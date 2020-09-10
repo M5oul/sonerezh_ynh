@@ -34,8 +34,8 @@
 		          "example": "domain.org"
             },
             {
-                "name": "url_path",
-		"type": "path",
+                "name": "path",
+                "type": "path",
                 "ask": {
                     "en": "Path for Sonerezh",
                     "fr": "Chemin sur lequel installer Sonerezh"
