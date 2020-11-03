@@ -15,12 +15,7 @@ sudo cp -a ../sources/. $src_path
 sudo chown -R www-data: $src_path
 sudo chmod -R 775 $src_path
 
-# Configure Nginx
-nginxconf=../conf/nginx-subpath.conf
-sed -i "s@YNH_WWW_PATH@$url_path@g" $nginxconf
-sed -i "s@YNH_WWW_ALIAS@$src_path/app/webroot@g" $nginxconf
-sed -i "s@YNH_WWW_APP@$app@g" $nginxconf
-sudo cp $nginxconf /etc/nginx/conf.d/$domain.d/$app.conf
+
 
 # Configure PHP
 php_conf=/etc/php5/fpm/pool.d/$app.conf
