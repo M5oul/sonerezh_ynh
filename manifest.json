@@ -6,20 +6,21 @@
         "en": "Self-hosted, web-based application to stream music, everywhere.",
         "fr": "Application web pour écouter en streaming de la musique partout."
     },
+    "version": "1.2.6~ynh1",
     "url": "https://www.sonerezh.bzh",
-    "license": "free",
+    "license": "AGPL-3.0",
     "maintainer": {
         "name": "Moul",
         "email": "moul@moul.re"
     },
     "requirements": {
-        "yunohost": ">> 2.4.0"
+        "yunohost": ">> 4.0.0"
     },
     "multi_instance": false,
     "services": [
         "nginx",
-	"php5-fpm",
-	"mysql"
+	    "php7.0-fpm",
+	    "mysql"
     ],
     "arguments": {
         "install" : [
@@ -30,11 +31,11 @@
                     "en": "Domain name for Sonerezh",
                     "fr": "Nom de domaine sur lequel installer Sonerezh"
                 },
-		"example": "domain.org"
+		          "example": "domain.org"
             },
             {
-                "name": "url_path",
-		"type": "path",
+                "name": "path",
+                "type": "path",
                 "ask": {
                     "en": "Path for Sonerezh",
                     "fr": "Chemin sur lequel installer Sonerezh"
@@ -43,22 +44,13 @@
                 "default": "/sonerezh"
             },
             {
-                "name": "email_auth",
-		"type": "email",
+                "name": "is_public",
+                "type": "boolean",
                 "ask": {
-                    "en": "Email address which will be used for authentication",
-                    "fr": "Adresse email qui servira à s’authentifier"
+                    "en": "Is it a public application?",
+                    "fr": "Est-ce une application publique ?"
                 },
-                "example": "jon@doe.net"
-            },
-            {
-                "name": "password",
-		"type": "password",
-                "ask": {
-                    "en": "Password to authenticate on Sonerezh (length ≥ 8)",
-                    "fr": "Mot de passe d’authentification sur Sonerezh (longueur ≥ 8)"
-                },
-                "example": "supersecret"
+                "default": true
             }
         ]
     }

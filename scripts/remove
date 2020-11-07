@@ -1,32 +1,72 @@
 #!/bin/bash
 
-# Exit and treat unset variables as an error
-set -e
+#=================================================
+# GENERIC START
+#=================================================
+# IMPORT GENERIC HELPERS
+#=================================================
 
-# Source YunoHost helpers
+source _common.sh
 source /usr/share/yunohost/helpers
 
-# Retrieve arguments
+#=================================================
+# LOAD SETTINGS
+#=================================================
+ynh_script_progression --message="Loading installation settings..." --weight=1
+
 app=$YNH_APP_INSTANCE_NAME
-domain=$(ynh_app_setting_get $app domain)
-url_path=$(ynh_app_setting_get $app path)
-music_path=$(ynh_app_setting_get $app music_path)
 
-# Remove sources
-sudo rm -rf /var/www/$app
+domain=$(ynh_app_setting_get --app=$app --key=domain)
+final_path=$(ynh_app_setting_get --app=$app --key=final_path)
+db_name=$(ynh_app_setting_get --app=$app --key=db_name)
+db_user=$db_name
 
-# Remove music
-#sudo rm -rf $music_path # could replace bottom line when issue #238 will be solved
-sudo rmdir $music_path
+#=================================================
+# STANDARD REMOVE
+#=================================================
+# REMOVE APP MAIN DIR
+#=================================================
+ynh_script_progression --message="Removing Sonerezh main directory..." --weight=3
 
-# Remove database
-root_pwd=$(sudo cat /etc/yunohost/mysql)
-mysql -u root -p$root_pwd -e "DROP DATABASE $app ; DROP USER $app@localhost ;"
+# Remove the app directory securely
+ynh_secure_remove --file="$final_path"
 
-# Remove Nginx and PHP configuration files
-sudo rm -f /etc/nginx/conf.d/$domain.d/$app.conf
-sudo rm -f /etc/php5/fpm/pool.d/$app.conf
+#=================================================
+# REMOVE THE MYSQL DATABASE
+#=================================================
+ynh_script_progression --message="Removing the MySQL database..." --weight=2
 
-# Reload services
-sudo service php5-fpm reload
-sudo service nginx reload
+# Remove a database if it exists, along with the associated user
+ynh_mysql_remove_db --db_user=$db_user --db_name=$db_name
+
+#=================================================
+# REMOVE NGINX CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing NGINX web server configuration..." --weight=1
+
+# Remove the dedicated NGINX config
+ynh_remove_nginx_config
+
+#=================================================
+# REMOVE PHP-FPM CONFIGURATION
+#=================================================
+ynh_script_progression --message="Removing PHP-FPM configuration..." --weight=2
+
+# Remove the dedicated PHP-FPM config
+ynh_remove_fpm_config
+
+#=================================================
+# GENERIC FINALIZATION
+#=================================================
+# REMOVE DEDICATED USER
+#=================================================
+ynh_script_progression --message="Removing the dedicated system user..." --weight=1
+
+# Delete a system user
+ynh_system_user_delete --username=$app
+
+#=================================================
+# END OF SCRIPT
+#=================================================
+
+ynh_script_progression --message="Removal of Sonerezh completed" --last
