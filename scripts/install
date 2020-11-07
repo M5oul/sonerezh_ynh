@@ -116,8 +116,8 @@ phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
-chown -R $app: $final_path
-#chmod -R 775 $final_path
+chown -R www-data: $final_path
+chmod -R 775 $final_path
 
 #=================================================
 # SETUP SSOWAT

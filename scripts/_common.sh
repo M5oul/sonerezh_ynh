@@ -9,7 +9,7 @@ pkg_dependencies="ffmpeg"
 YNH_PHP_VERSION="7.3"
 
 # dependencies used by the app
-extra_php_dependencies="php${YNH_PHP_VERSION}-mysql php${YNH_PHP_VERSION}-gd"
+extra_php_dependencies="php${YNH_PHP_VERSION}-curl php${YNH_PHP_VERSION}-imagick php${YNH_PHP_VERSION}-mcrypt php${YNH_PHP_VERSION}-mysql php${YNH_PHP_VERSION}-gd"
 
 #=================================================
 # PERSONAL HELPERS
