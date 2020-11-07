@@ -73,7 +73,9 @@ ynh_script_progression --message="Setting up source files..." --weight=2
 
 ynh_app_setting_set --app=$app --key=final_path --value=$final_path
 # Download, check integrity, uncompress and patch the source from app.src
-ynh_setup_source --dest_dir="$final_path"
+#ynh_setup_source --dest_dir="$final_path"
+
+git clone https://github.com/Sonerezh/sonerezh.git "$final_path" --quiet
 
 #=================================================
 # NGINX CONFIGURATION
@@ -86,10 +88,10 @@ ynh_add_nginx_config
 #=================================================
 # INSTALL SONEREZH WITH COMPOSER
 #=================================================
-# ynh_script_progression --message="Installing Sonerezh with composer..." --weight=45
+ynh_script_progression --message="Installing Sonerezh with composer..." --weight=45
 
-# # Install composer
-# ynh_install_composer --phpversion="${YNH_PHP_VERSION}" --workdir="$final_path" --install_args="--prefer-source --no-dev"
+# Install composer
+ynh_install_composer --phpversion="${YNH_PHP_VERSION}" --workdir="$final_path" --install_args="--prefer-source --no-dev"
 
 #=================================================
 # CREATE DEDICATED USER
