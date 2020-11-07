@@ -86,10 +86,10 @@ ynh_add_nginx_config
 #=================================================
 # INSTALL SONEREZH WITH COMPOSER
 #=================================================
-ynh_script_progression --message="Installing Sonerezh with composer..." --weight=45
+# ynh_script_progression --message="Installing Sonerezh with composer..." --weight=45
 
-# Install composer
-ynh_install_composer --phpversion="${YNH_PHP_VERSION}" --workdir="$final_path" --install_args="--prefer-source --no-dev"
+# # Install composer
+# ynh_install_composer --phpversion="${YNH_PHP_VERSION}" --workdir="$final_path" --install_args="--prefer-source --no-dev"
 
 #=================================================
 # CREATE DEDICATED USER
@@ -114,8 +114,8 @@ phpversion=$(ynh_app_setting_get --app=$app --key=phpversion)
 # SECURE FILES AND DIRECTORIES
 #=================================================
 
-chown -R www-data:www-data $final_path
-chmod -R 775 $final_path
+chown -R $app: $final_path
+#chmod -R 775 $final_path
 
 #=================================================
 # SETUP SSOWAT
