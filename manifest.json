@@ -8,7 +8,7 @@
     },
     "version": "1.2.6~ynh1",
     "url": "https://www.sonerezh.bzh",
-    "license": "free",
+    "license": "AGPL-3.0",
     "maintainer": {
         "name": "Moul",
         "email": "moul@moul.re"
@@ -51,24 +51,6 @@
                     "fr": "Est-ce une application publique ?"
                 },
                 "default": true
-            },
-            {
-                "name": "email_auth",
-		"type": "email",
-                "ask": {
-                    "en": "Email address which will be used for authentication",
-                    "fr": "Adresse email qui servira à s’authentifier"
-                },
-                "example": "jon@doe.net"
-            },
-            {
-                "name": "password",
-		        "type": "password",
-                "ask": {
-                    "en": "Password to authenticate on Sonerezh (length ≥ 8)",
-                    "fr": "Mot de passe d’authentification sur Sonerezh (longueur ≥ 8)"
-                },
-                "example": "supersecret"
             }
         ]
     }
