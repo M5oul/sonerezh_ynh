@@ -1,6 +1,6 @@
-SOURCE_URL=https://github.com/Sonerezh/sonerezh/releases/download/v1.2.6/sonerezh-1.2.6.zip
-SOURCE_SUM=13c23f5bc0c8fb7df9f99586ec0680f562fc6dfb99c505cd686ca5e3e035e08d
+SOURCE_URL=https://github.com/Sonerezh/sonerezh/archive/v1.2.6.tar.gz
+SOURCE_SUM=f0f783ddceca3727c6fbca659a0dedf745cc1a8bfe408b7547db22ce6feba9c3
 SOURCE_SUM_PRG=sha256sum
-SOURCE_FORMAT=zip
+SOURCE_FORMAT=tar.gz
 SOURCE_IN_SUBDIR=true
 SOURCE_FILENAME=
