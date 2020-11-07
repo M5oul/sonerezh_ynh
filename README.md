@@ -15,7 +15,7 @@ Sonerezh is a self-hosted, web-based audio streaming application allowing you to
 
 ## Screenshots
 
-![](Link to a screenshot of this app.)
+![](screenshots.png)
 
 ## Demo
 

@@ -50,7 +50,7 @@ ynh_restore_file --origin_path="/etc/nginx/conf.d/$domain.d/$app.conf"
 #=================================================
 # RESTORE THE APP MAIN DIR
 #=================================================
-ynh_script_progression --message="Restoring Lychee main directory..." --weight=2
+ynh_script_progression --message="Restoring Sonerezh main directory..." --weight=2
 
 ynh_restore_file --origin_path="$final_path"
 
@@ -65,7 +65,7 @@ ynh_system_user_create --username=$app
 #=================================================
 # RESTORE DATA
 #=================================================
-#ynh_script_progression --message="Restoring Lychee data..."
+#ynh_script_progression --message="Restoring Sonerezh data..."
 
 # Use --not_mandatory for the data directory, because if the backup has been made with BACKUP_CORE_ONLY, there's no data into the backup.
 #ynh_restore_file --origin_path="/home/yunohost.$app" --not_mandatory
@@ -112,4 +112,4 @@ ynh_systemd_action --service_name=nginx --action=reload
 # END OF SCRIPT
 #=================================================
 
-ynh_script_progression --message="Restoration completed for Lychee" --last
+ynh_script_progression --message="Restoration completed for Sonerezh" --last
