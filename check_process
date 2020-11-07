@@ -12,7 +12,6 @@
 		email_auth="jon@doe.net"
 		is_public=1	(PUBLIC|public=1|private=0)
 		password="pass"
-		port="666"	(PORT)
 	; Checks
 		pkg_linter=1
 		setup_sub_dir=1
@@ -21,7 +20,6 @@
 		setup_private=1
 		setup_public=1
 		upgrade=1
-		upgrade=1	from_commit=CommitHash
 		backup_restore=1
 		multi_instance=1
 		# incorrect_path=1

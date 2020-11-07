@@ -9,7 +9,7 @@
 If you don't have YunoHost, please consult [the guide](https://yunohost.org/#/install) to learn how to install it.*
 
 ## Overview
-Quick description of this app.
+Sonerezh is a self-hosted, web-based audio streaming application allowing you to access your music from anywhere, using your favorite web browser.
 
 **Shipped version:** 1.2.6
 
@@ -34,8 +34,8 @@ How to configure this app: From an admin panel, a plain file with SSH, or any ot
 
 #### Multi-user support
 
-Are LDAP and HTTP auth supported?
-Can the app be used by multiple users?
+ * Are LDAP and HTTP auth supported?
+ * Can the app be used by multiple users?
 
 #### Supported architectures
 

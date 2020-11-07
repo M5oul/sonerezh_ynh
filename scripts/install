@@ -113,13 +113,6 @@ chown -R www-data:www-data $final_path
 chmod -R 775 $final_path
 
 #=================================================
-# INTEGRATE SERVICE IN YUNOHOST
-#=================================================
-ynh_script_progression --message="Integrating service in YunoHost..." --weight=5
-
-yunohost service add $app --description "A short description of the app" --log "/var/log/$app/$app.log"
-
-#=================================================
 # SETUP SSOWAT
 #=================================================
 ynh_script_progression --message="Configuring SSOwat..." --weight=1
@@ -142,30 +135,3 @@ ynh_systemd_action --service_name=nginx --action=reload
 #=================================================
 
 ynh_script_progression --message="Installation of $app completed" --last
-
-
-
-
-
-
-
-
-# # Add alias line in hosts file
-# echo "127.0.0.1 $domain # $app" | sudo tee -a /etc/hosts
-
-# # Postinstall on web interface
-# sleep 1 && curl -k \
-# -d "data[DB][datasource]=MySQL" \
-# -d "data[DB][host]=localhost" \
-# -d "data[DB][database]=$app" \
-# -d "data[DB][login]=$app" \
-# -d "data[DB][password]=$db_pwd" \
-# -d "data[DB][prefix]="$app"_" \
-# -d "data[User][email]=$email_auth" \
-# -d "data[User][password]=$password" \
-# -d "data[User][confirm_password]=$password" \
-# -d "[Setting][Rootpath][0][rootpath]=$music_path" \
-# https://$domain$url_path/install
-
-# # Remove alias line from hosts file
-# sudo sed -i "/# $app/d" /etc/hosts
