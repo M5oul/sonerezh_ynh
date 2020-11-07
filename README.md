@@ -23,7 +23,22 @@ Sonerezh is a self-hosted, web-based audio streaming application allowing you to
 
 ## Configuration
 
-How to configure this app: From an admin panel, a plain file with SSH, or any other way.
+## Postinstallation
+Currently, you will have to do manually postinstallation.
+There is [an issue](https://github.com/YunoHost-Apps/sonerezh_ynh/issues/1) to solve that issue. But I wasn't able to solved it.
+
+You will have to go to `/sonerezh/install/` and put this parameters:
+
+- Retrieve database password:
+```bash
+sudo cat /etc/yunohost/apps/sonerezh/settings.yml | grep mysql
+```
+- Put your email and password to create an account.
+
+![Postinstall](postinstall.png)
+
+## Music
+Actually, sonerezh do not provide a web interface to upload music. You have to store your music in `/home/yunohost.app/sonerezh`. sonerezh will update your music.
 
 ## Documentation
 
@@ -69,30 +84,3 @@ sudo yunohost app install https://github.com/YunoHost-Apps/sonerezh_ynh/tree/tes
 or
 sudo yunohost app upgrade sonerezh -u https://github.com/YunoHost-Apps/sonerezh_ynh/tree/testing --debug
 ```
-
-
-
-![sonerezh screenshots](screenshots.png)
-
-
-## Postinstallation
-Currently, you will have to do manually postinstallation.
-There is [an issue](https://github.com/YunoHost-Apps/sonerezh_ynh/issues/1) to solve that issue. But I wasn't able to solved it.
-
-You will have to go to `/sonerezh/install/` and put this parameters:
-
-- Retrieve database password:
-```bash
-sudo cat /etc/yunohost/apps/sonerezh/settings.yml | grep mysql
-```
-- Put your email and password to create an account.
-
-![Postinstall](postinstall.png)
-
-## Music
-Actually, sonerezh do not provide a web interface to upload music.
-You have to store your music in `/home/yunohost.app/sonerezh`.
-sonerezh will update your music.
-
-
-
